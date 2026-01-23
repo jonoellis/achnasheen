@@ -1404,13 +1404,13 @@ fieldset {
     /*
      * [1] for IE11 support, use image without clip path
      */
-    background-image: url(/assets/images/icons/icons.stack.svg#checkbox); }
+    background-image: url(https://achnasheen.ellis.scot/checkbox.svg); }
     @supports (-webkit-mask-image: url()) or (mask-image: url()) {
       .ds_checkbox__label::after {
         background-color: currentColor;
         background-image: none;
-        -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#checkbox);
-        mask-image: url(/assets/images/icons/icons.stack.svg#checkbox); } }
+        -webkit-mask-image: url(https://achnasheen.ellis.scot/checkbox.svg);
+        mask-image: url(https://achnasheen.ellis.scot/checkbox.svg); } }
 
 @supports (-webkit-mask-image: url()) or (mask-image: url()) {
   .ds_checkbox {
@@ -1611,7 +1611,7 @@ fieldset {
     /*
      * [1] for IE11 support, use image without clip path
      */
-    background-image: url(/assets/images/icons/icons.stack.svg#radio); }
+    background-image: url(https://achnasheen.ellis.scot/radio.svg); }
     @supports (display: grid) {
       .ds_radio__label::after {
         background-color: #333333;
@@ -1620,8 +1620,8 @@ fieldset {
       .ds_radio__label::after {
         background-color: currentColor;
         background-image: none;
-        -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#radio);
-        mask-image: url(/assets/images/icons/icons.stack.svg#radio); } }
+        -webkit-mask-image: url(https://achnasheen.ellis.scot/radio.svg);
+        mask-image: url(https://achnasheen.ellis.scot/radio.svg); } }
 
 /*------------------------------------*\
     REVEAL CONTENT
@@ -1691,15 +1691,15 @@ fieldset {
     /*
      * [1] for IE11 support, use image without clip path
      */
-    background-image: url(/assets/images/icons/icons.stack.svg#expand_more);
+    background-image: url(https://achnasheen.ellis.scot/expand_more.svg);
     right: 8px;
     top: 8px; }
     @supports (-webkit-mask-image: url()) or (mask-image: url()) {
       .ds_select-arrow::before {
         background-color: currentColor;
         background-image: none;
-        -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#expand_more);
-        mask-image: url(/assets/images/icons/icons.stack.svg#expand_more); } }
+        -webkit-mask-image: url(https://achnasheen.ellis.scot/expand_more.svg);
+        mask-image: url(https://achnasheen.ellis.scot/expand_more.svg); } }
 
 .ds_select:focus + .ds_select-arrow {
   background-color: #fdd522; }
@@ -2026,7 +2026,7 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
     /*
      * [1] for IE11 support, use image without clip path
      */
-    background-image: url(https://cdn.glitch.com/da4f7748-a0df-4ce3-8be6-5578f0fd6485%2Fexpand_more.svg?v=1631113148089);
+    background-image: url(https://achnasheen.ellis.scot/expand_more.svg);
     right: 14px;
     position: absolute;
     pointer-events: none;
@@ -2035,8 +2035,8 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
       .ds_accordion-item__indicator {
         background-color: currentColor;
         background-image: none;
-        -webkit-mask-image: url(https://cdn.glitch.com/da4f7748-a0df-4ce3-8be6-5578f0fd6485%2Fexpand_more.svg?v=1631113148089);
-        mask-image: url(https://cdn.glitch.com/da4f7748-a0df-4ce3-8be6-5578f0fd6485%2Fexpand_more.svg?v=1631113148089); } }
+        -webkit-mask-image: url(https://achnasheen.ellis.scot/expand_more.svg);
+        mask-image: url(https://achnasheen.ellis.scot/expand_more.svg); } }
   .ds_accordion-item__body {
     display: none;
     padding: 24px 40px 40px 16px; }
@@ -2150,15 +2150,15 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
     /*
      * [1] for IE11 support, use image without clip path
      */
-    background-image: url(/assets/images/icons/icons.stack.svg#chevron_left);
+    background-image: url(https://achnasheen.ellis.scot/chevron_left.svg);
     left: -24px;
     position: absolute; }
     @supports (-webkit-mask-image: url()) or (mask-image: url()) {
       .ds_back-link::before {
         background-color: currentColor;
         background-image: none;
-        -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#chevron_left);
-        mask-image: url(/assets/images/icons/icons.stack.svg#chevron_left); } }
+        -webkit-mask-image: url(https://achnasheen.ellis.scot/chevron_left.svg);
+        mask-image: url(https://achnasheen.ellis.scot/chevron_left.svg); } }
 
 /*------------------------------------*\
     $BACK TO TOP
@@ -2237,7 +2237,7 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
     /*
      * [1] for IE11 support, use image without clip path
      */
-    background-image: url(/assets/images/icons/icons.stack.svg#chevron_right);
+    background-image: url(https://achnasheen.ellis.scot/chevron_right.svg);
     margin: 0 -2px 0 -1px;
     position: relative;
     top: 3px; }
@@ -2245,8 +2245,8 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
       .ds_breadcrumbs__item:not(:first-child)::before {
         background-color: currentColor;
         background-image: none;
-        -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#chevron_right);
-        mask-image: url(/assets/images/icons/icons.stack.svg#chevron_right); } }
+        -webkit-mask-image: url(https://achnasheen.ellis.scot/chevron_right.svg);
+        mask-image: url(https://achnasheen.ellis.scot/chevron_right.svg); } }
   .ds_breadcrumbs__container {
     padding-top: 16px; }
   @media (min-width: 768px) {
@@ -3391,14 +3391,14 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
       /*
        * [1] for IE11 support, use image without clip path
        */
-      background-image: url(/assets/images/icons/icons.stack.svg#chevron_left);
+      background-image: url(https://achnasheen.ellis.scot/chevron_left.svg);
       left: 0; }
       @supports (-webkit-mask-image: url()) or (mask-image: url()) {
         .ds_sequential-nav__button--left::after {
           background-color: currentColor;
           background-image: none;
-          -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#chevron_left);
-          mask-image: url(/assets/images/icons/icons.stack.svg#chevron_left); } }
+          -webkit-mask-image: url(https://achnasheen.ellis.scot/chevron_left.svg);
+          mask-image: url(https://achnasheen.ellis.scot/chevron_left.svg); } }
   .ds_sequential-nav__button--right {
     text-align: right;
     float: right;
@@ -3415,14 +3415,14 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
       /*
        * [1] for IE11 support, use image without clip path
        */
-      background-image: url(/assets/images/icons/icons.stack.svg#chevron_right);
+      background-image: url(https://achnasheen.ellis.scot/chevron_right.svg);
       right: 0; }
       @supports (-webkit-mask-image: url()) or (mask-image: url()) {
         .ds_sequential-nav__button--right::after {
           background-color: currentColor;
           background-image: none;
-          -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#chevron_right);
-          mask-image: url(/assets/images/icons/icons.stack.svg#chevron_right); } }
+          -webkit-mask-image: url(https://achnasheen.ellis.scot/chevron_right.svg);
+          mask-image: url(https://achnasheen.ellis.scot/chevron_right.svg); } }
 
 .ds_sequential-nav__button:hover::before {
   background-color: #00437e; }
@@ -3526,7 +3526,7 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
     /*
      * [1] for IE11 support, use image without clip path
      */
-    background-image: url(/assets/images/icons/icons.stack.svg#expand_more);
+    background-image: url(https://achnasheen.ellis.scot/expand_more.svg);
     right: 14px;
     position: absolute;
     top: 14px; }
@@ -3534,8 +3534,8 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
       .ds_side-navigation__expand-indicator {
         background-color: currentColor;
         background-image: none;
-        -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#expand_more);
-        mask-image: url(/assets/images/icons/icons.stack.svg#expand_more); } }
+        -webkit-mask-image: url(https://achnasheen.ellis.scot/expand_more.svg);
+        mask-image: url(https://achnasheen.ellis.scot/expand_more.svg); } }
   .ds_side-navigation #show-side-navigation:focus ~ .ds_side-navigation__expand {
     background: #fdd522;
     box-shadow: 0 3px #333333;
@@ -4427,13 +4427,13 @@ h1 + .ds_accordion, h2 + .ds_accordion, h3 + .ds_accordion {
       /*
        * [1] for IE11 support, use image without clip path
        */
-      background-image: url(/assets/images/icons/icons.stack.svg#priority_high); }
+      background-image: url(https://achnasheen.ellis.scot/priority_high.svg); }
       @supports (-webkit-mask-image: url()) or (mask-image: url()) {
         .ds_warning-text__icon::before {
           background-color: currentColor;
           background-image: none;
-          -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#priority_high);
-          mask-image: url(/assets/images/icons/icons.stack.svg#priority_high); } } }
+          -webkit-mask-image: url(https://achnasheen.ellis.scot/priority_high.svg);
+          mask-image: url(https://achnasheen.ellis.scot/priority_high.svg); } } }
 
 .ds_warning-text__text > :last-child {
   margin-bottom: 0; }
@@ -4701,7 +4701,7 @@ example__accordion-body--code figure {
     /*
      * [1] for IE11 support, use image without clip path
      */
-    background-image: url(/assets/images/icons/icons.stack.svg#chevron_right);
+    background-image: url(https://achnasheen.ellis.scot/chevron_right.svg);
     right: 23px;
     position: absolute;
     top: 18px; }
@@ -4709,8 +4709,8 @@ example__accordion-body--code figure {
       .link--progress:after {
         background-color: currentColor;
         background-image: none;
-        -webkit-mask-image: url(/assets/images/icons/icons.stack.svg#chevron_right);
-        mask-image: url(/assets/images/icons/icons.stack.svg#chevron_right); } }
+        -webkit-mask-image: url(https://achnasheen.ellis.scot/chevron_right.svg);
+        mask-image: url(https://achnasheen.ellis.scot/chevron_right.svg); } }
 
 /*------------------------------------*\
     #USERS
