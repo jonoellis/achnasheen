@@ -25,7 +25,7 @@
             src: url('https://achnasheen.ellis.scot/fonts/BUKA_italic.otf');
         }
 
-        /* Clean UI Font for the Form */
+        /* UI Font for the Form */
         body {
             font-family: sans-serif;
             margin: 0;
@@ -188,7 +188,12 @@
         #city-display { 
             font-family: 'Banger', sans-serif;
             color: #003a84;
-            left: 50%; transform: translateX(-50%); width: 94%; text-align: center; top: 475px; white-space: nowrap; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 94%; 
+            text-align: center; 
+            top: 475px; 
+            white-space: nowrap; 
         }
 
         #time-display {
@@ -307,21 +312,21 @@
 
     function update() {
         el('class-display').innerText = el('classIn').value.toUpperCase();
-        el('class-display').style.fontSize = el('classS').value + \"px\";
+        el('class-display').style.fontSize = el('classS').value + "px";
         el('dest-display').innerText = el('destIn').value.toUpperCase();
-        el('dest-display').style.fontSize = el('destS').value + \"px\";
+        el('dest-display').style.fontSize = el('destS').value + "px";
         el('city-display').innerText = el('cityIn').value.toUpperCase();
-        el('city-display').style.fontSize = el('cityS').value + \"px\";
+        el('city-display').style.fontSize = el('cityS').value + "px";
         el('pTopOut').innerText = el('pTopIn').value.toUpperCase();
-        el('pTopOut').style.fontSize = el('pTopS').value + \"px\";
+        el('pTopOut').style.fontSize = el('pTopS').value + "px";
         el('pBotOut').innerText = el('pBotIn').value.toUpperCase();
-        el('pBotOut').style.fontSize = el('pBotS').value + \"px\";
+        el('pBotOut').style.fontSize = el('pBotS').value + "px";
         el('time-display').innerText = el('timeIn').value.toUpperCase();
-        el('time-display').style.fontSize = el('timeS').value + \"px\";
+        el('time-display').style.fontSize = el('timeS').value + "px";
         el('date-display').innerText = el('dateIn').value.toUpperCase();
-        el('date-display').style.fontSize = el('dateS').value + \"px\";
+        el('date-display').style.fontSize = el('dateS').value + "px";
         el('rate-display').innerText = el('rateIn').value.toUpperCase();
-        el('rate-display').style.fontSize = el('rateS').value + \"px\";
+        el('rate-display').style.fontSize = el('rateS').value + "px";
         el('section-top').style.backgroundColor = el('cTop').value;
         el('section-bottom').style.backgroundColor = el('cBot').value;
     }
@@ -330,13 +335,13 @@
 
     el('downloadBtn').addEventListener('click', function() {
         if (typeof domtoimage === 'undefined') {
-            alert(\"The image library is still loading. Please wait a second.\");
+            alert("The image library is still loading. Please wait a second.");
             return;
         }
 
         const node = el('tag-canvas');
         const zoom = node.style.zoom;
-        node.style.zoom = \"1\";
+        node.style.zoom = "1";
 
         domtoimage.toBlob(node, { 
             width: 1080, 
@@ -353,7 +358,7 @@
         .catch(function (error) {
             console.error('Download error:', error);
             node.style.zoom = zoom;
-            alert(\"Security Note: Some browsers block external fonts when saving images locally. If the image is blank, try opening this via a local web server.\");
+            alert("Security Note: Some browsers block external fonts when saving images locally. If the image is blank, try opening this via a local web server.");
         });
     });
 
