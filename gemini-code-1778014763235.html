@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luggage Tag Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image-more/3.7.1/dom-to-image-more.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+            background-color: #f4f4f4;
+        }
+
+        #controls {
+            width: 100%;
+            max-width: 460px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .row { display: flex; gap: 10px; align-items: flex-end; }
+        .flex-grow { flex-grow: 1; }
+        .w-small { width: 80px; }
+        
+        label { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; }
+        input { padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="color"] { height: 40px; padding: 2px; cursor: pointer; }
+        
+        button { padding: 12px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 10px; }
+
+        #preview-window {
+            width: 540px; 
+            height: 540px;
+            border: 2px solid #333;
+            background: #666;
+            overflow: hidden;
+        }
+
+        #tag-canvas {
+            width: 1080px;
+            height: 1080px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            zoom: 0.5; 
+        }
+
+        #tag-container {
+            position: relative;
+            padding: 100px;
+        }
+
+        #tag-shape {
+            width: 607px; 
+            height: 972px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            filter: drop-shadow(40px 40px 25px rgba(0, 0, 0, 0.5));
+        }
+
+        #section-top {
+            height: 60%; 
+            width: 100%;
+            background-color: #f59c00;
+            border-top-left-radius: 160px;
+            border-top-right-radius: 160px;
+            position: relative;
+        }
+
+        #section-bottom {
+            height: 40%;
+            width: 100%;
+            background-color: #f0ebd4;
+            position: relative;
+            -webkit-mask-image: linear-gradient(to bottom, black 97%, transparent 97%),
+                                repeating-linear-gradient(to right, black 0px, black 30px, transparent 30px, transparent 55.18px);
+            mask-image: linear-gradient(to bottom, black 97%, transparent 97%),
+                        repeating-linear-gradient(to right, black 0px, black 30px, transparent 30px, transparent 55.18px);
+        }
+
+        #reinforcer {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 168px; 
+            height: 168px;
+            background-color: #cc9865;
+            z-index: 10;
+            clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .patch-zone-top, .patch-zone-bottom {
+            height: calc(50% - 20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .patch-zone-bottom { margin-top: 40px; }
+
+        #punch-hole {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px; 
+            height: 40px;
+            background-color: #ffffff;
+            border-radius: 50%; 
+            box-shadow: inset 4px 4px 6px rgba(0,0,0,0.5);
+        }
+
+        .patch-text {
+            color: #d00013;
+            font-weight: 900;
+            font-family: 'Arial Black', sans-serif;
+            text-align: center;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .tag-text {
+            position: absolute;
+            font-weight: 900;
+            font-family: 'Arial Black', sans-serif;
+            line-height: 1;
+            white-space: nowrap;
+            color: #003a84;
+            z-index: 20; 
+        }
+
+        /* Time Display Style - Overlapping the seam */
+        #time-display {
+            top: 60%; /* Positioned on the join */
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-5deg);
+            color: #d00013;
+            z-index: 50; /* Top layer */
+            pointer-events: none;
+        }
+
+        #dest-display { left: 50%; transform: translateX(-50%); width: 94%; text-align: center; top: 250px; }
+        #city-display { left: 50%; transform: translateX(-50%); width: 94%; text-align: center; top: 500px; }
+        #date-display { right: 40px; top: 104px; text-align: right; transform: translateY(-50%); }
+        #rate-display { right: 30px; bottom: 40px; text-align: right; }
+
+        #credit { font-size: 14px; color: #666; margin-top: 10px; }
+        #credit a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div id="controls">
+    <h2>Luggage Tag Generator</h2>
+    
+    <div class="row">
+        <div class="input-group flex-grow"><label>Destination:</label><input type="text" id="destIn" value="HEL"></div>
+        <div class="input-group w-small"><label>Size:</label><input type="number" id="destS" value="250"></div>
+    </div>
+
+    <div class="row">
+        <div class="input-group flex-grow"><label>City:</label><input type="text" id="cityIn" value="Helsinki"></div>
+        <div class="input-group w-small"><label>Size:</label><input type="number" id="cityS" value="60"></div>
+    </div>
+
+    <div class="row">
+        <div class="input-group flex-grow"><label>Company:</label><input type="text" id="pTopIn" value="FINNAIR"></div>
+        <div class="input-group w-small"><label>Size:</label><input type="number" id="pTopS" value="20"></div>
+    </div>
+
+    <div class="row">
+        <div class="input-group flex-grow"><label>Time:</label><input type="text" id="timeIn" value="14:20"></div>
+        <div class="input-group w-small"><label>Size:</label><input type="number" id="timeS" value="80"></div>
+    </div>
+
+    <div class="row">
+        <div class="input-group flex-grow"><label>Route:</label><input type="text" id="pBotIn" value="STO-HEL"></div>
+        <div class="input-group w-small"><label>Size:</label><input type="number" id="pBotS" value="20"></div>
+    </div>
+
+    <div class="row">
+        <div class="input-group flex-grow"><label>Date:</label><input type="text" id="dateIn" value="18 Jul '26"></div>
+        <div class="input-group w-small"><label>Size:</label><input type="number" id="dateS" value="30"></div>
+    </div>
+
+    <div class="row">
+        <div class="input-group flex-grow"><label>Rating:</label><input type="text" id="rateIn" value="A" maxlength="1"></div>
+        <div class="input-group w-small"><label>Size:</label><input type="number" id="rateS" value="360"></div>
+    </div>
+
+    <div class="row">
+        <div class="input-group flex-grow"><label>Top Color:</label><input type="color" id="cTop" value="#f59c00"></div>
+        <div class="input-group flex-grow"><label>Bottom Color:</label><input type="color" id="cBot" value="#f0ebd4"></div>
+    </div>
+
+    <button id="downloadBtn">Download PNG</button>
+    <div id="credit">Hat-tip to <a href="https://kottke.org/26/04/vintage-pan-am-luggage-tags" target="_blank">Jason Kottke</a></div>
+</div>
+
+<div id="preview-window">
+    <div id="tag-canvas">
+        <div id="tag-container">
+            <div id="tag-shape">
+                <div id="section-top">
+                    <div id="reinforcer">
+                        <div class="patch-zone-top"><div id="pTopOut" class="patch-text">FINNAIR</div></div>
+                        <div id="punch-hole"></div>
+                        <div class="patch-zone-bottom"><div id="pBotOut" class="patch-text">STO-HEL</div></div>
+                    </div>
+                </div>
+                <div id="section-bottom">
+                    <span id="rate-display" class="tag-text">A</span>
+                </div>
+                <span id="time-display" class="tag-text">14:20</span>
+                <span id="dest-display" class="tag-text">HEL</span>
+                <span id="city-display" class="tag-text">HELSINKI</span>
+                <span id="date-display" class="tag-text">18 JUL '26</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const el = (id) => document.getElementById(id);
+
+    function update() {
+        el('dest-display').innerText = el('destIn').value.toUpperCase();
+        el('dest-display').style.fontSize = el('destS').value + "px";
+        el('city-display').innerText = el('cityIn').value.toUpperCase();
+        el('city-display').style.fontSize = el('cityS').value + "px";
+        el('pTopOut').innerText = el('pTopIn').value.toUpperCase();
+        el('pTopOut').style.fontSize = el('pTopS').value + "px";
+        el('pBotOut').innerText = el('pBotIn').value.toUpperCase();
+        el('pBotOut').style.fontSize = el('pBotS').value + "px";
+        el('time-display').innerText = el('timeIn').value.toUpperCase();
+        el('time-display').style.fontSize = el('timeS').value + "px";
+        el('date-display').innerText = el('dateIn').value.toUpperCase();
+        el('date-display').style.fontSize = el('dateS').value + "px";
+        el('rate-display').innerText = el('rateIn').value.toUpperCase();
+        el('rate-display').style.fontSize = el('rateS').value + "px";
+        el('section-top').style.backgroundColor = el('cTop').value;
+        el('section-bottom').style.backgroundColor = el('cBot').value;
+    }
+
+    document.querySelectorAll('input').forEach(i => i.addEventListener('input', update));
+
+    el('downloadBtn').addEventListener('click', function() {
+        if (typeof domtoimage === 'undefined') {
+            alert("Library loading... try again in 1 second.");
+            return;
+        }
+
+        const node = el('tag-canvas');
+        const zoom = node.style.zoom;
+        node.style.zoom = "1";
+
+        domtoimage.toBlob(node, { 
+            width: 1080, 
+            height: 1080,
+            style: { zoom: 1 } 
+        })
+        .then(function (blob) {
+            const link = document.createElement('a');
+            link.download = `tag-${el('destIn').value.toLowerCase()}.png`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            node.style.zoom = zoom;
+        })
+        .catch(function (error) {
+            console.error('Download error:', error);
+            node.style.zoom = zoom;
+        });
+    });
+
+    window.onload = update;
+</script>
+</body>
+</html>
