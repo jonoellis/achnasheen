@@ -59,7 +59,6 @@
         input[type="color"] { height: 40px; padding: 2px; cursor: pointer; }
         
         button { padding: 12px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 10px; font-family: sans-serif; }
-        #recolorBtn { background-color: #6c757d; margin-top: 0; padding: 8px; font-size: 12px; }
 
         #preview-window {
             width: 540px; 
@@ -237,23 +236,24 @@
             text-align: right; 
             white-space: nowrap;
             line-height: 0.5;
+            z-index: 30; /* Kept in front of the logo background */
         }
 
         /* LOGO STYLING */
         #logo-display {
             position: absolute;
-            left: 30px;
-            bottom: 40px;
-            width: calc(607px * 0.4); /* 40% of lower section width */
-            height: calc(607px * 0.4); /* Structured as a square */
-            z-index: 15;
+            left: 0;
+            bottom: 0;
+            width: calc(607px * 0.4); /* 40% of the 607px width = 242.8px */
+            height: calc(607px * 0.4); /* Explicitly square */
+            z-index: 5; /* Lower layer so all other elements sit in front */
             display: flex;
             align-items: center;
             justify-content: center;
             pointer-events: none;
         }
 
-        #logo-display canvas, #logo-display svg, #logo-display img {
+        #logo-display img {
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -319,14 +319,6 @@
         <div class="input-group flex-grow"><label>Bottom Color:</label><input type="color" id="cBot" value="#f0ebd4"></div>
     </div>
 
-    <div class="row">
-        <div class="input-group flex-grow">
-            <label>Logo Image / SVG:</label>
-            <input type="file" id="logoIn" accept="image/*,.svg">
-        </div>
-        <button id="recolorBtn">Recolour to Navy</button>
-    </div>
-
     <button id="downloadBtn">Download PNG</button>
     <div id="credit">Hat-tip to <a href="https://kottke.org/26/04/vintage-pan-am-luggage-tags" target="_blank">Jason Kottke</a></div>
 </div>
@@ -344,7 +336,9 @@
                 </div>
                 <div id="section-bottom">
                     <span id="rate-display" class="tag-text">A</span>
-                    <div id="logo-display"></div>
+                    <div id="logo-display">
+                        <img src="noun-globe-1316736.svg" alt="Globe Logo">
+                    </div>
                 </div>
                 
                 <div id="class-wrapper">
@@ -368,7 +362,6 @@
 
 <script>
     const el = (id) => document.getElementById(id);
-    let originalImageSource = null; // Holds either the loaded SVG string or an Image element
 
     function update() {
         const classVal = el('classIn').value.toUpperCase();
@@ -397,140 +390,6 @@
         el('section-top').style.backgroundColor = el('cTop').value;
         el('section-bottom').style.backgroundColor = el('cBot').value;
     }
-
-    // Handle Image & SVG Upload
-    el('logoIn').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (file.type === "image/svg+xml" || file.name.endsWith('.svg')) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                originalImageSource = { type: 'svg', data: event.target.result };
-                renderSVG(event.target.result);
-            };
-            reader.readAsText(file);
-        } else {
-            // Standard Raster Images (PNG, JPEG, etc.)
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    originalImageSource = { type: 'raster', img: img };
-                    renderRaster(img);
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    function renderSVG(svgText) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(svgText, "image/svg+xml");
-        const svgElement = doc.querySelector('svg');
-        if (svgElement) {
-            el('logo-display').innerHTML = '';
-            el('logo-display').appendChild(svgElement);
-        }
-    }
-
-    function renderRaster(img) {
-        // Create a canvas element matching our target square size (40% of 607px = ~243px)
-        const canvas = document.createElement('canvas');
-        const targetSize = Math.round(607 * 0.4);
-        canvas.width = targetSize;
-        canvas.height = targetSize;
-        const ctx = canvas.getContext('2d');
-
-        // Draw image keeping ratio inside the square boundaries (contain rule)
-        const scale = Math.min(targetSize / img.width, targetSize / img.height);
-        const x = (targetSize - img.width * scale) / 2;
-        const y = (targetSize - img.height * scale) / 2;
-        
-        ctx.clearRect(0, 0, targetSize, targetSize);
-        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-
-        el('logo-display').innerHTML = '';
-        el('logo-display').appendChild(canvas);
-    }
-
-    // Advanced Smart Recolour Logic
-    el('recolorBtn').addEventListener('click', function() {
-        if (!originalImageSource) return;
-
-        const navy = "#003a84";
-
-        if (originalImageSource.type === 'svg') {
-            // For SVGs, parse the source, change attributes and style fills unless it's white
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(originalImageSource.data, "image/svg+xml");
-            const svgElement = doc.querySelector('svg');
-            if (!svgElement) return;
-
-            const shapes = svgElement.querySelectorAll('path, circle, rect, polygon, ellipse, line, polyline');
-            shapes.forEach(shape => {
-                let fill = shape.getAttribute('fill') || shape.style.fill;
-                if (fill) {
-                    fill = fill.trim().toLowerCase();
-                    // Avoid white variations
-                    if (fill === '#fff' || fill === '#ffffff' || fill === 'white' || fill === 'rgb(255,255,255)' || fill === 'rgb(255, 255, 255)') {
-                        return;
-                    }
-                }
-                shape.setAttribute('fill', navy);
-                shape.style.fill = navy;
-            });
-            el('logo-display').innerHTML = '';
-            el('logo-display').appendChild(svgElement);
-
-        } else if (originalImageSource.type === 'raster') {
-            // Process pixel map to recolour foreground (non-white, non-transparent pixels)
-            const canvas = document.createElement('canvas');
-            const targetSize = Math.round(607 * 0.4);
-            canvas.width = targetSize;
-            canvas.height = targetSize;
-            const ctx = canvas.getContext('2d');
-
-            const img = originalImageSource.img;
-            const scale = Math.min(targetSize / img.width, targetSize / img.height);
-            const x = (targetSize - img.width * scale) / 2;
-            const y = (targetSize - img.height * scale) / 2;
-            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-
-            const imgData = ctx.getImageData(0, 0, targetSize, targetSize);
-            const data = imgData.data;
-
-            // Target Navy color components
-            const rTarget = 0;
-            const gTarget = 58;
-            const bTarget = 132;
-
-            for (let i = 0; i < data.length; i += 4) {
-                const r = data[i];
-                const g = data[i + 1];
-                const b = data[i + 2];
-                const a = data[i + 3];
-
-                // Check if transparent
-                if (a === 0) continue;
-
-                // Check if pixel is white (with slight tolerance to account for anti-aliasing artifacts)
-                if (r > 240 && g > 240 && b > 240) {
-                    continue; 
-                }
-
-                // If foreground, replace with Target Navy while preserving original opacity
-                data[i] = rTarget;
-                data[i + 1] = gTarget;
-                data[i + 2] = bTarget;
-            }
-
-            ctx.putImageData(imgData, 0, 0);
-            el('logo-display').innerHTML = '';
-            el('logo-display').appendChild(canvas);
-        }
-    });
 
     document.querySelectorAll('input').forEach(i => i.addEventListener('input', update));
 
