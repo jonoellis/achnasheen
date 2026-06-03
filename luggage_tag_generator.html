@@ -47,16 +47,18 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
 
         .input-group { display: flex; flex-direction: column; gap: 5px; }
-        .row { display: flex; gap: 10px; align-items: flex-end; }
+        .row { display: flex; gap: 10px; align-items: flex-end; width: 100%; }
         .flex-grow { flex-grow: 1; }
-        .w-small { width: 80px; }
-        .time-separator { font-weight: bold; padding-bottom: 10px; font-size: 16px; color: #444; }
+        .w-small { width: 80px; flex-shrink: 0; }
+        .w-time { width: 70px; flex-shrink: 0; }
+        .time-separator { font-weight: bold; padding-bottom: 10px; font-size: 16px; color: #444; flex-shrink: 0; }
         
         label { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; }
-        input { padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; font-family: sans-serif; }
+        input { padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; font-family: sans-serif; width: 100%; box-sizing: border-box; }
         input[type="color"] { height: 40px; padding: 2px; cursor: pointer; }
         
         /* Palette Styles */
@@ -65,7 +67,7 @@
         .palette-swatch { width: 32px; height: 32px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; transition: transform 0.1s ease; }
         .palette-swatch:hover { transform: scale(1.1); }
 
-        button { padding: 12px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 10px; font-family: sans-serif; }
+        button { padding: 12px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 10px; font-family: sans-serif; width: 100%; }
 
         #preview-window {
             width: 540px; 
@@ -97,6 +99,7 @@
             display: flex;
             flex-direction: column;
             filter: drop-shadow(40px 40px 25px rgba(0, 0, 0, 0.5));
+            overflow: hidden; /* Guards against any asset scaling out of the layout shell bounds */
         }
 
         #section-top {
@@ -252,11 +255,12 @@
         /* LOGO STYLING */
         #logo-display {
             position: absolute;
-            left: 0;
-            bottom: 0;
-            width: calc(607px * 0.6); /* 40% of the 607px width = 242.8px */
-            height: calc(607px * 0.6); /* Explicitly square */
-            z-index: 5; /* Lower layer so all other elements sit in front */
+            /* Scaled up by 15% from 0.6 to 0.69, shifted left/down slightly to compensate container safely */
+            left: -15px;
+            bottom: -15px;
+            width: calc(607px * 0.69); 
+            height: calc(607px * 0.69); 
+            z-index: 5; /* Lower layer so all text elements sit in front */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -305,10 +309,10 @@
     </div>
 
     <div class="row">
-        <div class="input-group flex-grow"><label>Start Time:</label><input type="text" id="timeStartIn" value="14:20" placeholder="00:00"></div>
+        <div class="input-group w-time"><label>Start:</label><input type="text" id="timeStartIn" value="14:20" placeholder="00:00"></div>
         <div class="time-separator">→</div>
-        <div class="input-group flex-grow"><label>End Time:</label><input type="text" id="timeEndIn" value="16:57" placeholder="00:00"></div>
-        <div class="input-group w-small"><label>Size:</label><input type="number" id="timeS" value="80"></div>
+        <div class="input-group w-time"><label>End:</label><input type="text" id="timeEndIn" value="16:57" placeholder="00:00"></div>
+        <div class="input-group flex-grow"><label>Size:</label><input type="number" id="timeS" value="80"></div>
     </div>
 
     <div class="row">
@@ -343,6 +347,11 @@
             </div>
         </div>
         <div class="input-group flex-grow"><label>Bottom Color:</label><input type="color" id="cBot" value="#f0ebd4"></div>
+    </div>
+
+    <div class="row">
+        <div class="input-group flex-grow"><label>Primary Font Color (Blue):</label><input type="color" id="cfBlue" value="#003a84"></div>
+        <div class="input-group flex-grow"><label>Secondary Font Color (Red):</label><input type="color" id="cfRed" value="#d00013"></div>
     </div>
 
     <button id="downloadBtn">Download PNG</button>
@@ -390,6 +399,21 @@
     const el = (id) => document.getElementById(id);
 
     function update() {
+        const hexBlue = el('cfBlue').value;
+        const hexRed = el('cfRed').value;
+
+        // Apply Primary Dynamic Color (Default Blue elements)
+        el('class-display').style.color = hexBlue;
+        el('date-display').style.color = hexBlue;
+        el('dest-display').style.color = hexBlue;
+        el('city-display').style.color = hexBlue;
+
+        // Apply Secondary Dynamic Color (Default Red elements)
+        el('pTopOut').style.color = hexRed;
+        el('pBotOut').style.color = hexRed;
+        el('time-display').style.color = hexRed;
+        el('rate-display').style.color = hexRed;
+
         const classVal = el('classIn').value.toUpperCase();
         el('class-display').innerHTML = classVal.includes(' ') ? classVal.replace(' ', '<br>') : classVal;
         el('class-display').style.fontSize = el('classS').value + "px";
