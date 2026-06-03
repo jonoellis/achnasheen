@@ -54,11 +54,13 @@
         .row { display: flex; gap: 10px; align-items: flex-end; width: 100%; }
         .flex-grow { flex-grow: 1; }
         .w-small { width: 80px; flex-shrink: 0; }
+        .w-medium { width: 150px; flex-shrink: 0; }
         .w-time { width: 70px; flex-shrink: 0; }
         .time-separator { font-weight: bold; padding-bottom: 10px; font-size: 16px; color: #444; flex-shrink: 0; }
         
         label { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; }
-        input { padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; font-family: sans-serif; width: 100%; box-sizing: border-box; }
+        input, select { padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; font-family: sans-serif; width: 100%; box-sizing: border-box; }
+        select { height: 38px; background-color: #fff; cursor: pointer; }
         input[type="color"] { height: 40px; padding: 2px; cursor: pointer; }
         
         /* Palette Styles */
@@ -99,7 +101,7 @@
             display: flex;
             flex-direction: column;
             filter: drop-shadow(40px 40px 25px rgba(0, 0, 0, 0.5));
-            overflow: hidden; /* Guards against any asset scaling out of the layout shell bounds */
+            overflow: hidden;
         }
 
         #section-top {
@@ -130,7 +132,7 @@
             width: 168px; 
             height: 168px;
             background-color: #cc9865;
-            z-index: 10; /* Higher than text elements so text slides underneath */
+            z-index: 10;
             clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
             display: flex;
             flex-direction: column;
@@ -170,7 +172,7 @@
             position: absolute;
             font-weight: normal;
             line-height: 1;
-            z-index: 2; /* Lower than reinforcer to slide under it */
+            z-index: 2;
         }
 
         #class-wrapper {
@@ -180,7 +182,7 @@
             transform: translateY(-50%);
             width: 220px;
             text-align: center;
-            z-index: 2; /* Lower than reinforcer to slide under it */
+            z-index: 2;
         }
 
         #date-wrapper {
@@ -190,7 +192,7 @@
             transform: translateY(-50%);
             width: 220px;
             text-align: center;
-            z-index: 2; /* Lower than reinforcer to slide under it */
+            z-index: 2;
         }
 
         #class-display, #date-display {
@@ -210,7 +212,7 @@
             align-items: center;
             pointer-events: none;
             gap: 0px; 
-            z-index: 2; /* Lower than reinforcer to slide under it */
+            z-index: 2;
         }
 
         #dest-display { 
@@ -249,18 +251,17 @@
             text-align: right; 
             white-space: nowrap;
             line-height: 0.5;
-            z-index: 30; /* Kept in front of the logo background */
+            z-index: 30;
         }
 
         /* LOGO STYLING */
         #logo-display {
             position: absolute;
-            /* Scaled up by 15% from 0.6 to 0.69, shifted left/down slightly to compensate container safely */
             left: -15px;
             bottom: -15px;
             width: calc(607px * 0.69); 
             height: calc(607px * 0.69); 
-            z-index: 5; /* Lower layer so all text elements sit in front */
+            z-index: 5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -305,6 +306,34 @@
 
     <div class="row">
         <div class="input-group flex-grow"><label>Company:</label><input type="text" id="pTopIn" value="FINNAIR"></div>
+        <div class="input-group w-medium">
+            <label>Presets:</label>
+            <select id="companySelect">
+                <option value="">-- Choose --</option>
+                <option value="Arriva">Arriva</option>
+                <option value="Deutsche Bahn">Deutsche Bahn</option>
+                <option value="DSB">DSB</option>
+                <option value="Eckerö Line">Eckerö Line</option>
+                <option value="Edelaraudtee">Edelaraudtee</option>
+                <option value="Elron">Elron</option>
+                <option value="Eurostar">Eurostar</option>
+                <option value="Finrail">Finrail</option>
+                <option value="FlixTrain">FlixTrain</option>
+                <option value="GoCollective">GoCollective</option>
+                <option value="LNER">LNER</option>
+                <option value="LTG Link">LTG Link</option>
+                <option value="NS">NS</option>
+                <option value="Pasažieru vilciens">Pasažieru vilciens</option>
+                <option value="PKP Intercity">PKP Intercity</option>
+                <option value="SJ">SJ</option>
+                <option value="SNCF">SNCF</option>
+                <option value="Snälltåget">Snälltåget</option>
+                <option value="Tallink Silja Line">Tallink Silja Line</option>
+                <option value="Viking Line">Viking Line</option>
+                <option value="VIVI">VIVI</option>
+                <option value="VR">VR</option>
+            </select>
+        </div>
         <div class="input-group w-small"><label>Size:</label><input type="number" id="pTopS" value="50"></div>
     </div>
 
@@ -445,6 +474,14 @@
         el('section-top').style.backgroundColor = el('cTop').value;
         el('section-bottom').style.backgroundColor = el('cBot').value;
     }
+
+    // Handle Dropdown to Input copy
+    el('companySelect').addEventListener('change', function() {
+        if (this.value !== "") {
+            el('pTopIn').value = this.value;
+            update();
+        }
+    });
 
     // Set up form listeners
     document.querySelectorAll('input').forEach(i => i.addEventListener('input', update));
