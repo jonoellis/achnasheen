@@ -53,11 +53,18 @@
         .row { display: flex; gap: 10px; align-items: flex-end; }
         .flex-grow { flex-grow: 1; }
         .w-small { width: 80px; }
+        .time-separator { font-weight: bold; padding-bottom: 10px; font-size: 16px; color: #444; }
         
         label { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; }
         input { padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; font-family: sans-serif; }
         input[type="color"] { height: 40px; padding: 2px; cursor: pointer; }
         
+        /* Palette Styles */
+        .palette-label { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; margin-top: 4px; display: block; }
+        .palette-container { display: flex; gap: 8px; margin-top: 4px; }
+        .palette-swatch { width: 32px; height: 32px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; transition: transform 0.1s ease; }
+        .palette-swatch:hover { transform: scale(1.1); }
+
         button { padding: 12px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 10px; font-family: sans-serif; }
 
         #preview-window {
@@ -120,7 +127,7 @@
             width: 168px; 
             height: 168px;
             background-color: #cc9865;
-            z-index: 10;
+            z-index: 10; /* Higher than text elements so text slides underneath */
             clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
             display: flex;
             flex-direction: column;
@@ -160,7 +167,7 @@
             position: absolute;
             font-weight: normal;
             line-height: 1;
-            z-index: 20; 
+            z-index: 2; /* Lower than reinforcer to slide under it */
         }
 
         #class-wrapper {
@@ -170,6 +177,7 @@
             transform: translateY(-50%);
             width: 220px;
             text-align: center;
+            z-index: 2; /* Lower than reinforcer to slide under it */
         }
 
         #date-wrapper {
@@ -179,6 +187,7 @@
             transform: translateY(-50%);
             width: 220px;
             text-align: center;
+            z-index: 2; /* Lower than reinforcer to slide under it */
         }
 
         #class-display, #date-display {
@@ -198,6 +207,7 @@
             align-items: center;
             pointer-events: none;
             gap: 0px; 
+            z-index: 2; /* Lower than reinforcer to slide under it */
         }
 
         #dest-display { 
@@ -295,7 +305,9 @@
     </div>
 
     <div class="row">
-        <div class="input-group flex-grow"><label>Time:</label><input type="text" id="timeIn" value="14:20→16:57"></div>
+        <div class="input-group flex-grow"><label>Start Time:</label><input type="text" id="timeStartIn" value="14:20" placeholder="00:00"></div>
+        <div class="time-separator">→</div>
+        <div class="input-group flex-grow"><label>End Time:</label><input type="text" id="timeEndIn" value="16:57" placeholder="00:00"></div>
         <div class="input-group w-small"><label>Size:</label><input type="number" id="timeS" value="80"></div>
     </div>
 
@@ -315,7 +327,21 @@
     </div>
 
     <div class="row">
-        <div class="input-group flex-grow"><label>Top Color:</label><input type="color" id="cTop" value="#f59c00"></div>
+        <div class="input-group flex-grow">
+            <label>Top Color:</label>
+            <input type="color" id="cTop" value="#f59c00">
+            <div>
+                <span class="palette-label">Palette Options:</span>
+                <div class="palette-container">
+                    <div class="palette-swatch" style="background-color: #fdaca9;" data-color="#fdaca9"></div>
+                    <div class="palette-swatch" style="background-color: #fb0062;" data-color="#fb0062"></div>
+                    <div class="palette-swatch" style="background-color: #02b7d2;" data-color="#02b7d2"></div>
+                    <div class="palette-swatch" style="background-color: #f59c00;" data-color="#f59c00"></div>
+                    <div class="palette-swatch" style="background-color: #fe4600;" data-color="#fe4600"></div>
+                    <div class="palette-swatch" style="background-color: #e92347;" data-color="#e92347"></div>
+                </div>
+            </div>
+        </div>
         <div class="input-group flex-grow"><label>Bottom Color:</label><input type="color" id="cBot" value="#f0ebd4"></div>
     </div>
 
@@ -381,8 +407,13 @@
         el('pTopOut').style.fontSize = el('pTopS').value + "px";
         el('pBotOut').innerText = el('pBotIn').value.toUpperCase();
         el('pBotOut').style.fontSize = el('pBotS').value + "px";
-        el('time-display').innerText = el('timeIn').value.toUpperCase();
+
+        // Merge split fields to populate destination display
+        const startTime = el('timeStartIn').value.trim();
+        const endTime = el('timeEndIn').value.trim();
+        el('time-display').innerText = `${startTime}→${endTime}`;
         el('time-display').style.fontSize = el('timeS').value + "px";
+
         el('date-display').innerText = el('dateIn').value.toUpperCase();
         el('date-display').style.fontSize = el('dateS').value + "px";
         el('rate-display').innerText = el('rateIn').value.toUpperCase();
@@ -391,7 +422,17 @@
         el('section-bottom').style.backgroundColor = el('cBot').value;
     }
 
+    // Set up form listeners
     document.querySelectorAll('input').forEach(i => i.addEventListener('input', update));
+
+    // Handle interactive swatches clicking
+    document.querySelectorAll('.palette-swatch').forEach(swatch => {
+        swatch.addEventListener('click', function() {
+            const chosenColor = this.getAttribute('data-color');
+            el('cTop').value = chosenColor;
+            update();
+        });
+    });
 
     el('downloadBtn').addEventListener('click', function() {
         const node = el('tag-canvas');
