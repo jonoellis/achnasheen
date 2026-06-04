@@ -280,7 +280,7 @@
             position: absolute;
             left: 30px;
             bottom: 40px;
-            z-index: 25; /* Free-floating: higher than logo, lower than rate-display */
+            z-index: 25; 
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -293,6 +293,27 @@
             text-align: left;
             white-space: nowrap;
             line-height: 0.85;
+        }
+
+        /* RAW TEXTBOX SUMMARY CONTAINER */
+        #data-summary-box {
+            width: 540px;
+            margin-top: 20px;
+            box-sizing: border-box;
+        }
+
+        #markdown-output {
+            width: 100%;
+            height: 180px;
+            font-family: monospace;
+            font-size: 13px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #fff;
+            color: #333;
+            resize: vertical;
+            box-sizing: border-box;
         }
 
         #credit { font-size: 12px; color: #666; margin-top: 12px; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #ddd; padding-top: 10px; width: 100%; }
@@ -370,7 +391,7 @@
     </div>
 
     <div class="row">
-        <div class="input-group flex-grow"><label>Date:</label><input type="text" id="dateIn" value="18 Jul '26"></div>
+        <div class="input-group flex-grow"><label>Date (DD-MM-YYYY):</label><input type="text" id="dateIn" value="18-7-2026"></div>
         <div class="input-group w-small"><label>Size:</label><input type="number" id="dateS" value="60"></div>
     </div>
 
@@ -462,8 +483,31 @@
     </div>
 </div>
 
+<div id="data-summary-box">
+    <label>Data Output Summary (Markdown):</label>
+    <textarea id="markdown-output" readonly></textarea>
+</div>
+
 <script>
     const el = (id) => document.getElementById(id);
+
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    function parseInputDate(str) {
+        const parts = str.split('-');
+        if (parts.length === 3) {
+            const d = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10);
+            let y = parts[2].trim();
+            
+            if (!isNaN(d) && !isNaN(m) && m >= 1 && m <= 12) {
+                const monthStr = months[m - 1];
+                const shortYear = y.length === 4 ? y.substring(2) : y;
+                return `${d} ${monthStr} '${shortYear}`;
+            }
+        }
+        return str; // Fallback to raw string if it doesn't match DD-MM-YYYY pattern
+    }
 
     function update() {
         const hexBlue = el('cfBlue').value;
@@ -505,10 +549,13 @@
         el('time-display').innerText = `${startTime}→${endTime}`;
         el('time-display').style.fontSize = el('timeS').value + "px";
 
-        el('date-display').innerText = el('dateIn').value.toUpperCase();
+        // Handle parsed structural Date representation transformation 
+        const rawDateValue = el('dateIn').value.trim();
+        const formattedLabelDate = parseInputDate(rawDateValue);
+        el('date-display').innerText = formattedLabelDate.toUpperCase();
         el('date-display').style.fontSize = el('dateS').value + "px";
         
-        // Update Added Overlay Fields
+        // Update Floating Overlay Text Containers
         el('dayNum-display').innerText = el('dayNumIn').value.toUpperCase();
         el('dayNum-display').style.fontSize = el('dayNumS').value + "px";
         el('trans-display').innerText = el('transIn').value.toUpperCase();
@@ -518,6 +565,21 @@
         el('rate-display').style.fontSize = el('rateS').value + "px";
         el('section-top').style.backgroundColor = el('cTop').value;
         el('section-bottom').style.backgroundColor = el('cBot').value;
+
+        // Populate Markdown Metadata Field Sync
+        buildMarkdownOutput();
+    }
+
+    function buildMarkdownOutput() {
+        const md = 
+`Date: ${el('dateIn').value.trim()}
+Day Number: ${el('dayNumIn').value.trim()}
+Transport Mode & Count: ${el('transIn').value.trim()}
+Route: ${el('pBotIn').value.trim()}
+Company: ${el('pTopIn').value.trim()}
+Class: ${el('classIn').value.trim()}
+Rating: ${el('rateIn').value.trim()}`;
+        el('markdown-output').value = md;
     }
 
     // Handle Dropdown to Input copy
@@ -545,6 +607,9 @@
         const zoom = node.style.zoom;
         node.style.zoom = "1";
 
+        // Sanitize date layout value strings safely for standard multi-environment filenames
+        const fileDate = el('dateIn').value.trim().replace(/[\s']/g, '').replace(/[\/\\:]/g, '-');
+
         domtoimage.toBlob(node, { 
             width: 1080, 
             height: 1080,
@@ -552,7 +617,7 @@
         })
         .then(function (blob) {
             const link = document.createElement('a');
-            link.download = `tag-${el('destIn').value.toLowerCase()}-${el('dateIn').value.toLowerCase()}.png`;
+            link.download = `tag-${el('destIn').value.toLowerCase()}-${fileDate.toLowerCase()}.png`;
             link.href = URL.createObjectURL(blob);
             link.click();
             node.style.zoom = zoom;
