@@ -417,7 +417,7 @@
     <div id="credit">
         <div>Hat-tip to <a href="https://kottke.org/26/04/vintage-pan-am-luggage-tags" target="_blank">Jason Kottke</a>.</div>
         <div>Globe icon created by <a href="https://thenounproject.com/icon/globe-1316736/" target="_blank">4B Icons</a> under <a href="https://help.thenounproject.com/hc/en-us/articles/200509798-What-licenses-do-you-offer-for-icons">CC BY-3.0 Attribution License</a>.</div>
-        <div>Fonts used: <em>Chromoxome</em> by <a href="https://Maniackers.com" target="_blank">Maniackers Design</a>, <em>Punk Machina</em> by <a href="https://www.high-logic.com/" target="_blank">High-Logic</a>, <em>Banger</em> & <em>Buka</em> via Indie Font Bundle 2015.</div>
+        <div>Fonts used: <em>Chromoxome by Thom Niessink</em>, <em>Punk Machina</em>, <em>Banger</em> & <em>Buka</em> all from the 2015 Indie Font Bundle.</div>
     </div>
 </div>
 
@@ -552,7 +552,7 @@
         })
         .then(function (blob) {
             const link = document.createElement('a');
-            link.download = `tag-${el('destIn').value.toLowerCase()}.png`;
+            link.download = `tag-${el('destIn').value.toLowerCase()}-${el('dateIn').value.toLowerCase()}.png`;
             link.href = URL.createObjectURL(blob);
             link.click();
             node.style.zoom = zoom;
