@@ -275,7 +275,27 @@
             display: block;
         }
 
-        #credit { font-size: 14px; color: #666; margin-top: 10px; }
+        /* OVERLAY TEXT STYLING */
+        #overlay-text-wrapper {
+            position: absolute;
+            left: 30px;
+            bottom: 40px;
+            z-index: 25; /* Higher than logo, lower than rate-display to align with layout */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            pointer-events: none;
+        }
+
+        .overlay-display {
+            font-family: 'PunkMachina', sans-serif;
+            color: #000000;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 0.85;
+        }
+
+        #credit { font-size: 12px; color: #666; margin-top: 12px; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #ddd; padding-top: 10px; width: 100%; }
         #credit a { color: #007bff; text-decoration: none; }
     </style>
 </head>
@@ -354,6 +374,17 @@
         <div class="input-group w-small"><label>Size:</label><input type="number" id="dateS" value="60"></div>
     </div>
 
+    <!-- NEW INPUT FIELDS -->
+    <div class="row">
+        <div class="input-group flex-grow"><label>Day Number:</label><input type="text" id="dayNumIn" value="Day #1"></div>
+        <div class="input-group w-small"><label>Size:</label><input type="number" id="dayNumS" value="40"></div>
+    </div>
+
+    <div class="row">
+        <div class="input-group flex-grow"><label>Transport Mode & Count:</label><input type="text" id="transIn" value="Train #1"></div>
+        <div class="input-group w-small"><label>Size:</label><input type="number" id="transS" value="40"></div>
+    </div>
+
     <div class="row">
         <div class="input-group flex-grow"><label>Rating:</label><input type="text" id="rateIn" value="A" maxlength="1"></div>
         <div class="input-group w-small"><label>Size:</label><input type="number" id="rateS" value="450"></div>
@@ -384,7 +415,11 @@
     </div>
 
     <button id="downloadBtn">Download PNG</button>
-    <div id="credit">Hat-tip to <a href="https://kottke.org/26/04/vintage-pan-am-luggage-tags" target="_blank">Jason Kottke</a></div>
+    <div id="credit">
+        <div>Hat-tip to <a href="https://kottke.org/26/04/vintage-pan-am-luggage-tags" target="_blank">Jason Kottke</a>.</div>
+        <div>Globe icon created by <a href="https://thenounproject.com/icon/globe-1316736/" target="_blank">4B Icons</a> under <a href="https://help.thenounproject.com/hc/en-us/articles/200509798-What-licenses-do-you-offer-for-icons">CC BY-3.0 Attribution License</a>.</div>
+        <div>Fonts used: <em>Chromoxome</em> by <a href="https://Maniackers.com" target="_blank">Maniackers Design</a>, <em>Punk Machina</em> by <a href="https://www.high-logic.com/" target="_blank">High-Logic</a>, <em>Banger</em> & <em>Buka</em> via Indie Font Bundle 2015.</div>
+    </div>
 </div>
 
 <div id="preview-window">
@@ -402,6 +437,11 @@
                     <span id="rate-display" class="tag-text">A</span>
                     <div id="logo-display">
                         <img src="noun-globe-1316736.svg" alt="Globe Logo">
+                    </div>
+                    <!-- NEW OVERLAY TEXT BLOCK -->
+                    <div id="overlay-text-wrapper">
+                        <div id="dayNum-display" class="overlay-display">DAY #1</div>
+                        <div id="trans-display" class="overlay-display">TRAIN #1</div>
                     </div>
                 </div>
                 
@@ -469,6 +509,13 @@
 
         el('date-display').innerText = el('dateIn').value.toUpperCase();
         el('date-display').style.fontSize = el('dateS').value + "px";
+        
+        // Update New Overlay Fields
+        el('dayNum-display').innerText = el('dayNumIn').value.toUpperCase();
+        el('dayNum-display').style.fontSize = el('dayNumS').value + "px";
+        el('trans-display').innerText = el('transIn').value.toUpperCase();
+        el('trans-display').style.fontSize = el('transS').value + "px";
+
         el('rate-display').innerText = el('rateIn').value.toUpperCase();
         el('rate-display').style.fontSize = el('rateS').value + "px";
         el('section-top').style.backgroundColor = el('cTop').value;
@@ -481,7 +528,7 @@
             el('pTopIn').value = this.value;
             update();
         }
-    });
+    }); seasonal
 
     // Set up form listeners
     document.querySelectorAll('input').forEach(i => i.addEventListener('input', update));
